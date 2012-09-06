@@ -146,10 +146,23 @@ module CarrierWave
         # boolean
         #
         def store(file)
-          @file = riak_client.store(@bucket, @key, file.read, {:content_type => file.content_type})
+          @file = riak_client.store(@bucket, file.filename, file.read, {:content_type => file.content_type})
           @key = @file.key
           @uploader.key = @key
           true
+        end
+        
+        
+        def url(options = {})
+          "#{@uploader.riak_host}:#{@uploader.riak_port}/riak/image/#{@key}"
+        end
+
+        def path
+          key
+        end
+
+        def filename
+          @key
         end
 
         private

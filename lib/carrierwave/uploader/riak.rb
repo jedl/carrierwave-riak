@@ -21,32 +21,32 @@ module CarrierWave
 
       private
 
-      def build_versioned_key(key, version_name)
-        unless version_name.nil?
-          "#{version_name}_#{key}"
-        else
-          key
-        end
-
-      end
+      # def build_versioned_key(key, version_name)
+      #   unless version_name.nil?
+      #     "#{version_name}_#{key}"
+      #   else
+      #     key
+      #   end
+      # 
+      # end
 
       def store_versions!(new_file)
         active_versions.each { |name, v|
-          v.key = build_versioned_key(key, name)
+          # v.key = build_versioned_key(key, name)
           v.store!(new_file)
         }
       end
 
       def remove_versions!
         versions.each { |name, v|
-          v.key = build_versioned_key(key, name)
+          # v.key = build_versioned_key(key, name)
           v.remove!
         }
       end
 
       def retrieve_versions_from_cache!(cache_name)
         versions.each { |name, v|
-          v.key = build_versioned_key(key, name)
+          # v.key = build_versioned_key(key, name)
           v.retrieve_from_cache!(cache_name)
         }
       end
