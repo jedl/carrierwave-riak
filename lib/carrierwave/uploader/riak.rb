@@ -5,7 +5,7 @@ module CarrierWave
   module Uploader
     class Riak < Base
 
-      attr_accessor :key
+      attr_accessor :bucket, :key
 
       storage :riak
 
@@ -18,7 +18,15 @@ module CarrierWave
           end
         end
       end
-
+      
+      def path
+        File.join([@bucket, @key])
+      end
+      
+      def filename
+        @key
+      end
+      
       private
 
       # def build_versioned_key(key, version_name)

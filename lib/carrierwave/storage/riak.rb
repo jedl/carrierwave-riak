@@ -48,6 +48,11 @@ module CarrierWave
         def escaped(path)
           CGI.escape(path)
         end
+        
+        # simple wrapper for the private method full_filename. This is essentially a replacement for store_dir as Riak doesn't really have a notion of directories/paths, just buckets and keys.
+        def get_full_filename(for_file = filename)
+          full_filename(for_file)
+        end
       end
 
       class File
@@ -57,6 +62,17 @@ module CarrierWave
           @bucket = bucket
           @key = key
           @base = base
+        end
+
+        ##
+        # Returns the bucket of the riak file
+        #
+        # === Returns
+        #
+        # [String] A filename
+        #
+        def bucket
+          @bucket
         end
 
         ##
@@ -147,18 +163,19 @@ module CarrierWave
         #
         def store(file)
           @file = riak_client.store(@bucket, file.filename, file.read, {:content_type => file.content_type})
-          @key = @file.key
+          @key = file.filename
+          @uploader.bucket = @bucket
           @uploader.key = @key
           true
         end
         
         
         def url(options = {})
-          "#{@uploader.riak_host}:#{@uploader.riak_port}/riak/image/#{@key}"
+          "#{@uploader.riak_host}:#{@uploader.riak_port}/riak/#{@bucket}/#{@key}"
         end
 
         def path
-          key
+          File.join([@bucket, @key])
         end
 
         def filename
@@ -213,7 +230,8 @@ module CarrierWave
       # [CarrierWave::Storage::Riak::File] the stored file
       #
       def store!(file)
-        f = CarrierWave::Storage::Riak::File.new(uploader, self, uploader.bucket, uploader.key)
+        # f = CarrierWave::Storage::Riak::File.new(uploader, self, uploader.bucket, uploader.key)
+        f = CarrierWave::Storage::Riak::File.new(uploader, self, uploader.bucket, uploader.get_full_filename(filename))
         f.store(file)
         f
       end
@@ -229,7 +247,8 @@ module CarrierWave
       # [CarrierWave::Storage::Riak::File] the stored file
       #
       def retrieve!(key)
-        CarrierWave::Storage::Riak::File.new(uploader, self, uploader.bucket, key)
+        # CarrierWave::Storage::Riak::File.new(uploader, self, uploader.bucket, key)
+        CarrierWave::Storage::Riak::File.new(uploader, self, uploader.bucket, uploader.get_full_filename(key))
       end
 
       def identifier
