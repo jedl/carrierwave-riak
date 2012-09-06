@@ -49,14 +49,11 @@ module CarrierWave
           CGI.escape(path)
         end
         
-        # simple wrapper for the private method full_filename. This is essentially a replacement for store_dir as Riak doesn't really have a notion of directories/paths, just buckets and keys.
-        def get_full_filename(for_file = filename)
-          full_filename(for_file)
-        end
       end
 
       class File
-
+        attr_accessor :bucket, :key
+        
         def initialize(uploader, base, bucket, key)
           @uploader = uploader
           @bucket = bucket
@@ -164,7 +161,6 @@ module CarrierWave
         def store(file)
           @file = riak_client.store(@bucket, file.filename, file.read, {:content_type => file.content_type})
           @key = file.filename
-          @uploader.bucket = @bucket
           @uploader.key = @key
           true
         end
@@ -231,6 +227,8 @@ module CarrierWave
       #
       def store!(file)
         # f = CarrierWave::Storage::Riak::File.new(uploader, self, uploader.bucket, uploader.key)
+        puts "!!!!!!!!!!!!!!!!!!!!!!! bucket"
+        puts uploader.bucket
         f = CarrierWave::Storage::Riak::File.new(uploader, self, uploader.bucket, uploader.get_full_filename(filename))
         f.store(file)
         f
