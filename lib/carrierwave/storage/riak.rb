@@ -161,7 +161,6 @@ module CarrierWave
         def store(file)
           @file = riak_client.store(@bucket, file.filename, file.read, {:content_type => file.content_type})
           @key = file.filename
-          @uploader.key = @key
           true
         end
         
@@ -171,7 +170,8 @@ module CarrierWave
         end
 
         def path
-          File.join([@bucket, @key])
+          # Specifying Object to designate Ruby's top level File class, not the class in which this method is definec (CarrierWave::Storage::Riak::File)
+          Object::File.join([@bucket, @key])
         end
 
         def filename

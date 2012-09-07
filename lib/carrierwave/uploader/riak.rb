@@ -24,12 +24,16 @@ module CarrierWave
         full_filename(for_file)
       end
       
+      def key
+        file.key
+      end
+      
       def path
-        File.join([self.bucket, @key])
+        file.path
       end
       
       def filename
-        @key
+        file.filename
       end
       
       private
