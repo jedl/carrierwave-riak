@@ -161,6 +161,7 @@ module CarrierWave
         def store(file)
           @file = riak_client.store(@bucket, file.filename, file.read, {:content_type => file.content_type})
           @key = file.filename
+          @uploader.key = @key
           true
         end
         
@@ -227,8 +228,6 @@ module CarrierWave
       #
       def store!(file)
         # f = CarrierWave::Storage::Riak::File.new(uploader, self, uploader.bucket, uploader.key)
-        puts "!!!!!!!!!!!!!!!!!!!!!!! bucket"
-        puts uploader.bucket
         f = CarrierWave::Storage::Riak::File.new(uploader, self, uploader.bucket, uploader.get_full_filename(filename))
         f.store(file)
         f

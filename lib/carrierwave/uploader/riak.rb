@@ -4,9 +4,9 @@ require 'riak'
 module CarrierWave
   module Uploader
     class Riak < Base
-
+      
       attr_accessor :key
-
+      
       storage :riak
 
       if defined?(Rails)
@@ -22,18 +22,6 @@ module CarrierWave
       # simple wrapper for the private method full_filename. This is essentially a replacement for store_dir as Riak doesn't really have a notion of directories/paths, just buckets and keys.
       def get_full_filename(for_file = filename)
         full_filename(for_file)
-      end
-      
-      def key
-        file.key
-      end
-      
-      def path
-        file.path
-      end
-      
-      def filename
-        file.filename
       end
       
       private
