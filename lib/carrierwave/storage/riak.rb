@@ -228,7 +228,7 @@ module CarrierWave
       #
       def store!(file)
         # f = CarrierWave::Storage::Riak::File.new(uploader, self, uploader.bucket, uploader.key)
-        f = CarrierWave::Storage::Riak::File.new(uploader, self, uploader.bucket, uploader.get_full_filename(filename))
+        f = CarrierWave::Storage::Riak::File.new(uploader, self, uploader.bucket, uploader.get_full_filename)
         f.store(file)
         f
       end
