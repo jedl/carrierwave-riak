@@ -13,6 +13,8 @@ module CarrierWave
         after :store, :updatemodel
 
         def updatemodel(file)
+          # ?????????? TODO: spend time getting this to work when using riak as the primary database
+          # Comment out the code below to get things working when using ripple
           if model.read_attribute(:"#{self.mounted_as}").nil? || model.read_attribute(:"#{self.mounted_as}") != self.key
             model.update_attribute(:"#{self.mounted_as}", self.key)
           end
